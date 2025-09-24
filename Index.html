@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Something For You ❤️</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #ffe6f0;
+    }
+    .screen {
+      display: none;
+      padding: 40px;
+    }
+    .active {
+      display: block;
+    }
+    h1 {
+      color: #ff4d6d;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .card {
+      width: 80px;
+      height: 80px;
+      background: #fff;
+      border: 2px solid #ff4d6d;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hidden {
+      background: #ffb3c6;
+      color: transparent;
+    }
+    .message {
+      font-size: 20px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Screen 1: Welcome -->
+  <div id="screen1" class="screen active">
+    <h1>Hieee there! 💕</h1>
+    <p>Please wait a moment...</p>
+  </div>
+
+  <!-- Screen 2: Game intro -->
+  <div id="screen2" class="screen">
+    <h1>I wanna tell you something...</h1>
+    <p class="message">But first, can you solve this memory game? 😉</p>
+  </div>
+
+  <!-- Screen 3: Memory Game -->
+  <div id="screen3" class="screen">
+    <h1>Memory Game 🃏</h1>
+    <div class="cards" id="cards"></div>
+  </div>
+
+  <!-- Screen 4: Final Message -->
+  <div id="screen4" class="screen">
+    <h1>I Love You Sooo Muchhh ❤️</h1>
+    <p class="message">Love you my dearest, the sweetest, the funniest, the cutest...<br>
+    Please tell me you love me too 🥺💖</p>
+  </div>
+
+  <script>
+    // Screen switching
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // Step 1 → Step 2
+    setTimeout(() => showScreen('screen2'), 2000);
+    // Step 2 → Step 3
+    setTimeout(() => showScreen('screen3'), 5000);
+
+    // Memory Game setup
+    const emojis = ['💖','💖','🌹','🌹','😘','😘','😍','😍'];
+    let shuffled = emojis.sort(() => Math.random() - 0.5);
+    let cards = document.getElementById('cards');
+    let first = null;
+    let lock = false;
+    let matched = 0;
+
+    shuffled.forEach((em, i) => {
+      let card = document.createElement('div');
+      card.className = 'card hidden';
+      card.dataset.value = em;
+      card.innerText = em;
+      card.addEventListener('click', () => {
+        if (lock || !card.classList.contains('hidden')) return;
+        card.classList.remove('hidden');
+        if (!first) {
+          first = card;
+        } else {
+          if (first.dataset.value === card.dataset.value) {
+            first = null;
+            matched += 2;
+            if (matched === emojis.length) {
+              setTimeout(() => showScreen('screen4'), 1000);
+            }
+          } else {
+            lock = true;
+            setTimeout(() => {
+              card.classList.add('hidden');
+              first.classList.add('hidden');
+              first = null;
+              lock = false;
+            }, 800);
+          }
+        }
+      });
+      cards.appendChild(card);
+    });
+  </script>
+</body>
+</html>
